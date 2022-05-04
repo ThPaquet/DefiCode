@@ -65,7 +65,7 @@ namespace TestsCalculationStringParsing
         }
 
         [Fact]
-        public void Test_GetNumbersInCalculationString_OneFloat()
+        public void Test_GetNumbersInCalculationString_OneDecimals()
         {
             Calculator calculator = new Calculator();
             List<decimal> numbers = new List<decimal>();
@@ -75,6 +75,47 @@ namespace TestsCalculationStringParsing
 
             Assert.Equal(1, numbers.Count);
             Assert.Equal(1.2m, numbers[0]);
+        }
+
+        [Fact]
+        public void Test_GetNumbersInCalculationString_OneDecimals_SplitByWhitespace()
+        {
+            Calculator calculator = new Calculator();
+            List<decimal> numbers = new List<decimal>();
+            string calculationString = "1 . 2";
+
+            numbers = calculator.GetNumbersInCalculationString(calculationString);
+
+            Assert.Equal(1, numbers.Count);
+            Assert.Equal(1.2m, numbers[0]);
+        }
+
+        [Fact]
+        public void Test_GetNumbersInCalculationString_TwoDecimals()
+        {
+            Calculator calculator = new Calculator();
+            List<decimal> numbers = new List<decimal>();
+            string calculationString = "1.2 + 2.7";
+
+            numbers = calculator.GetNumbersInCalculationString(calculationString);
+
+            Assert.Equal(2, numbers.Count);
+            Assert.Equal(1.2m, numbers[0]);
+            Assert.Equal(2.7m, numbers[1]);
+        }
+
+        [Fact]
+        public void Test_GetNumbersInCalculationString_TwoDecimals_SplitByWhitespace()
+        {
+            Calculator calculator = new Calculator();
+            List<decimal> numbers = new List<decimal>();
+            string calculationString = "1 .2 + 2. 7";
+
+            numbers = calculator.GetNumbersInCalculationString(calculationString);
+
+            Assert.Equal(2, numbers.Count);
+            Assert.Equal(1.2m, numbers[0]);
+            Assert.Equal(2.7m, numbers[1]);
         }
     }
 }

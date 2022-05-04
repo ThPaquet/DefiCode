@@ -8,14 +8,6 @@ namespace DefiCode
 {
     public class Calculator
     {
-        //public float Calculate(string expression)
-        //{
-        //    List<float> numbers = new List<float>();
-        //    List<char> operators = new List<char>();
-
-        //    expression = expression.Trim();
-        //}
-
         public List<decimal> GetNumbersInCalculationString(string expression)
         {
             List<decimal> numbers = new List<decimal>();
