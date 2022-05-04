@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DefiCode
@@ -34,6 +35,43 @@ namespace DefiCode
             }
 
             return numbers;
+        }
+        public List<Operator> GetOperatorsInCalculationString(string expression)
+        {
+            char[] recognizedOperators = { '+', '-', '*', '/', '^', '√' };
+            List<Operator> operators = new List<Operator>();
+            expression = expression.Replace(" ", "");
+
+            for (int index = 0; index < expression.Length; index++)
+            {
+                if (recognizedOperators.Contains(expression[index]) &&
+                    !(index != 0 && recognizedOperators.Contains(expression[index - 1]) && expression[index] == '-'))
+                {
+                    Operator operatorToAdd = new Operator(expression[index]);
+                    operators.Add(operatorToAdd);
+                }
+            }
+
+            return operators;
+        }
+
+        public bool IsValidCalculationString(string expression)
+        {
+            char[] recognizedOperators = { '+', '-', '*', '/', '^', '√' };
+            bool isValid = true;
+
+            expression = expression.Replace(" ", "");
+
+            isValid = !(
+                Regex.IsMatch(expression, "^[+*/^]") ||
+                Regex.IsMatch(expression, "^-[+/*^]") ||
+                Regex.IsMatch(expression, "^--") ||
+                Regex.IsMatch(expression, "√[+*/^√]") ||
+                Regex.IsMatch(expression, "[-+*/^][+*/^]") ||
+                Regex.IsMatch(expression, "/0") ||
+                Regex.IsMatch(expression, "[-+*/^√]$"));
+
+            return isValid;
         }
     }
 }
