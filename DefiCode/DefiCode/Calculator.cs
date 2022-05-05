@@ -9,6 +9,53 @@ namespace DefiCode
 {
     public class Calculator
     {
+        public string Calculate(string expression)
+        {
+            if (!IsValidCalculationString(expression))
+            {
+                return "Erreur";
+            }
+
+            List<Operator> operators = GetOperatorsInCalculationString(expression);
+            List<decimal> numbers = GetNumbersInCalculationString(expression);
+
+            while (operators.Count > 0)
+            {
+                Operator currentOperator = operators.FirstOrDefault(o => 
+                    o.Priority == operators.Max(o => o.Priority));
+
+                if (currentOperator != null)
+                {
+                    int index = operators.IndexOf(currentOperator);
+
+                    switch (currentOperator.Symbol)
+                    {
+                        case '+':
+                            numbers[index] = numbers[index] + numbers[index + 1];
+                            break;
+                        case '-':
+                            numbers[index] = numbers[index] - numbers[index + 1];
+                            break;
+                        case '*':
+                            numbers[index] = numbers[index] * numbers[index + 1];
+                            break;
+                        case '/':
+                            numbers[index] = numbers[index] / numbers[index + 1];
+                            break;
+                        case '^':
+                            numbers[index] = Convert.ToDecimal(Math.Pow((double)numbers[index], (double)numbers[index + 1]));
+                            break;
+                        default:
+                            break;
+                    }
+
+                    operators.Remove(currentOperator);
+                    numbers.RemoveAt(index + 1);
+                }
+            }
+
+            return numbers[0].ToString();
+        }
         public List<decimal> GetNumbersInCalculationString(string expression)
         {
             List<decimal> numbers = new List<decimal>();
@@ -18,7 +65,14 @@ namespace DefiCode
             {
                 if (char.IsDigit(expression[index]))
                 {
-                    string numberString = expression[index].ToString();
+                    string numberString = "";
+
+                    if (IsNegativeNumberInExpression(expression, index))
+                    {
+                        numberString += "-";
+                    }
+                    
+                    numberString += expression[index].ToString();
 
                     while (index < expression.Length - 1 && 
                         (char.IsDigit(expression[index + 1]) || 
@@ -45,7 +99,8 @@ namespace DefiCode
             for (int index = 0; index < expression.Length; index++)
             {
                 if (recognizedOperators.Contains(expression[index]) &&
-                    !(index != 0 && recognizedOperators.Contains(expression[index - 1]) && expression[index] == '-'))
+                    (index > 0 || expression[index] == '√') &&
+                    !(index > 0 && recognizedOperators.Contains(expression[index - 1]) && expression[index] == '-'))
                 {
                     Operator operatorToAdd = new Operator(expression[index]);
                     operators.Add(operatorToAdd);
@@ -72,6 +127,11 @@ namespace DefiCode
                 Regex.IsMatch(expression, "[-+*/^√]$"));
 
             return isValid;
+        }
+        public bool IsNegativeNumberInExpression(string expression, int index)
+        {
+            return (index == 1 && expression[index - 1] == '-') ||
+                        (index >= 2 && expression[index - 1] == '-' && !char.IsDigit(expression[index - 2]));
         }
     }
 }

@@ -10,7 +10,74 @@ namespace TestsCalculationStringParsing
 {
     public class CalculatorTest 
     {
+        #region Calculate
 
+        [Fact]
+        public void Test_Calculate_OnePlusOne()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "2";
+            string result = "";
+
+            result = calculator.Calculate("1 + 1");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Test_Calculate_OnePlusTwo()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "3";
+            string result = "";
+
+            result = calculator.Calculate("1 + 2");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Test_Calculate_OnePlusMinusOne()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "0";
+            string result = "";
+
+            result = calculator.Calculate("1 + -1");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Test_Calculate_MinusOneMinusMinusOne()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "0";
+            string result = "";
+
+            result = calculator.Calculate("-1 - -1");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Test_Calculate_FiveMinusFour()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "1";
+            string result = "";
+
+            result = calculator.Calculate("5-4");
+
+            Assert.Equal(expected, result);
+        }
+
+        #endregion
         #region GetNumbersInCalculationString 
         [Fact]
         public void Test_GetNumbersInCalculationString_OneInt()
@@ -120,6 +187,33 @@ namespace TestsCalculationStringParsing
             Assert.Equal(2.72m, numbers[1]);
         }
 
+        [Fact]
+        public void Test_GetNumbersInCalculationString_SingleNegative()
+        {
+            Calculator calculator = new Calculator();
+            List<decimal> numbers = new List<decimal>();
+            string calculationString = "-1";
+
+            numbers = calculator.GetNumbersInCalculationString(calculationString);
+
+            Assert.Equal(1, numbers.Count);
+            Assert.Equal(-1m, numbers[0]);
+        }
+
+        [Fact]
+        public void Test_GetNumbersInCalculationString_NegativeInAddition()
+        {
+            Calculator calculator = new Calculator();
+            List<decimal> numbers = new List<decimal>();
+            string calculationString = "1 + -1";
+
+            numbers = calculator.GetNumbersInCalculationString(calculationString);
+
+            Assert.Equal(2, numbers.Count);
+            Assert.Equal(1m, numbers[0]);
+            Assert.Equal(-1m, numbers[1]);
+        }
+
         #endregion
         #region GetOperatorsInCalculationString
 
@@ -179,6 +273,32 @@ namespace TestsCalculationStringParsing
             Assert.Contains(operators, o => o.Symbol == '+');
             Assert.Contains(operators, o => o.Symbol == '^');
             Assert.Contains(operators, o => o.Symbol == '/');
+        }
+
+        [Fact]
+        public void Test_GetOperatorsInCalculationString_MinusTwoNegatives()
+        {
+            Calculator calculator = new Calculator();
+            List<Operator> operators = new List<Operator>();
+            string expression = "-1 - -1";
+
+            operators = calculator.GetOperatorsInCalculationString(expression);
+
+            Assert.Equal(1, operators.Count);
+            Assert.Contains(operators, o => o.Symbol == '-');
+        }
+
+        [Fact]
+        public void Test_GetOperatorsInCalculationString_NegativeMinusPositive()
+        {
+            Calculator calculator = new Calculator();
+            List<Operator> operators = new List<Operator>();
+            string expression = "-1 - 1";
+
+            operators = calculator.GetOperatorsInCalculationString(expression);
+
+            Assert.Equal(1, operators.Count);
+            Assert.Contains(operators, o => o.Symbol == '-');
         }
         #endregion
         #region IsValidCalculationString
@@ -296,6 +416,59 @@ namespace TestsCalculationStringParsing
             expression = "0 * 3 √";
             Assert.False(calculator.IsValidCalculationString(expression));
         }
+        #endregion
+        #region IsNegativeNumberInExpression
+
+        [Fact]
+        public void Test_IsNegativeNumberInExpression_True_SingleInt()
+        {
+            Calculator calculator = new Calculator();
+            string expression = "-1";
+            int index = 1;
+
+            Assert.True(calculator.IsNegativeNumberInExpression(expression, index));
+        }
+
+        [Fact]
+        public void Test_IsNegativeNumberInExpression_False_TwoIntSubtraction()
+        {
+            Calculator calculator = new Calculator();
+            string expression = "1-1";
+            int index = 2;
+
+            Assert.False(calculator.IsNegativeNumberInExpression(expression, index));
+        }
+
+        [Fact]
+        public void Test_IsNegativeNumberInExpression_True_OneDecimal()
+        {
+            Calculator calculator = new Calculator();
+            string expression = "-2.243";
+            int index = 1;
+
+            Assert.True(calculator.IsNegativeNumberInExpression(expression, index));
+        }
+
+        [Fact]
+        public void Test_IsNegativeNumberInExpression_True_MinusNegative()
+        {
+            Calculator calculator = new Calculator();
+            string expression = "1--2";
+            int index = 3;
+
+            Assert.True(calculator.IsNegativeNumberInExpression(expression, index));
+        }
+
+        [Fact]
+        public void Test_IsNegativeNumberInExpression_True_PlusNegative()
+        {
+            Calculator calculator = new Calculator();
+            string expression = "1+-2";
+            int index = 3;
+
+            Assert.True(calculator.IsNegativeNumberInExpression(expression, index));
+        }
+
         #endregion
     }
 }
