@@ -16,8 +16,19 @@ namespace DefiCode
                 return "Erreur";
             }
 
-            List<Operator> operators = GetOperatorsInCalculationString(expression);
+            for (int index = 0; index < expression.Length; index++)
+            {
+                if (expression[index] == '(')
+                {
+                    int closingParanthesisIndex = expression.IndexOf(')');
+                    string subExpression = expression.Substring(index + 1, closingParanthesisIndex - index - 1);
+                    string subExpressionResult = this.Calculate(subExpression);
+                    expression = expression.Replace($"({subExpression})", subExpressionResult);
+                }
+            }
+
             List<decimal> numbers = GetNumbersInCalculationString(expression);
+            List<Operator> operators = GetOperatorsInCalculationString(expression);
 
             while (operators.Count > 0)
             {
@@ -54,7 +65,7 @@ namespace DefiCode
                 }
             }
 
-            return numbers[0].ToString();
+            return numbers.First().ToString().Replace(',', '.');
         }
         public List<decimal> GetNumbersInCalculationString(string expression)
         {
@@ -124,7 +135,8 @@ namespace DefiCode
                 Regex.IsMatch(expression, "√[+*/^√]") ||
                 Regex.IsMatch(expression, "[-+*/^][+*/^]") ||
                 Regex.IsMatch(expression, "/0") ||
-                Regex.IsMatch(expression, "[-+*/^√]$"));
+                Regex.IsMatch(expression, "[-+*/^√]$")) &&
+                expression.Count(c => c == '(') == expression.Count(c => c == ')');
 
             return isValid;
         }

@@ -77,6 +77,123 @@ namespace TestsCalculationStringParsing
             Assert.Equal(expected, result);
         }
 
+        [Fact]
+        public void Test_Calculate_FiveTimesTwo()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "10";
+            string result = "";
+
+            result = calculator.Calculate("5*2");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Test_Calculate_SumOfTwoPlusFiveTimesThree()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "21";
+            string result = "";
+
+            result = calculator.Calculate("(2+5)*3");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Test_Calculate_TenDividedByTwo()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "5";
+            string result = "";
+
+            result = calculator.Calculate("10/2");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Test_Calculate_TwoPlusTwoTimesFivePlusFive()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "17";
+            string result = "";
+
+            result = calculator.Calculate("2+2*5+5");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Test_Calculate_TwoPointEightTimesThreeMinusOne()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "7.4";
+            string result = "";
+
+            result = calculator.Calculate("2.8*3-1");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Test_Calculate_TwoPowersEight()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "256";
+            string result = "";
+
+            result = calculator.Calculate("2^8");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Test_Calculate_TwoPowersEightTimesFiveMinusOne()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "1279";
+            string result = "";
+
+            result = calculator.Calculate("2^8*5-1");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Test_Calculate_SquareRootOfFour()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "2";
+            string result = "";
+
+            result = calculator.Calculate("sqrt(4)");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Test_Calculate_OneDividedByZero()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "Erreur";
+            string result = "";
+
+            result = calculator.Calculate("1/0");
+
+            Assert.Equal(expected, result);
+        }
+
         #endregion
         #region GetNumbersInCalculationString 
         [Fact]
@@ -414,6 +531,24 @@ namespace TestsCalculationStringParsing
             Assert.False(calculator.IsValidCalculationString(expression));
 
             expression = "0 * 3 √";
+            Assert.False(calculator.IsValidCalculationString(expression));
+        }
+
+        [Fact]
+        public void Test_IsValidCalculationString_EqualNumberOfParenthesis()
+        {
+            Calculator calculator = new Calculator();
+            string expression = "(2+1) * (1+1)";
+
+            Assert.True(calculator.IsValidCalculationString(expression));
+        }
+
+        [Fact]
+        public void Test_IsValidCalculationString_UnEqualNumberOfParenthesis()
+        {
+            Calculator calculator = new Calculator();
+            string expression = "(2+1 * (1+1)";
+
             Assert.False(calculator.IsValidCalculationString(expression));
         }
         #endregion
