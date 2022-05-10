@@ -17,7 +17,7 @@ namespace TestsCalculationStringParsing
         {
             Calculator calculator = new Calculator();
 
-            string expected = "2";
+            string expected = "1";
             string result = "";
 
             result = calculator.Calculate("1 + 1");
@@ -216,6 +216,19 @@ namespace TestsCalculationStringParsing
             string result = "";
 
             result = calculator.Calculate("2 ^ 2 + sqrt(4) * 6 / (4 - 2)");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Test_OnePlusOneInBiggerEquation()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "4";
+            string result = "";
+
+            result = calculator.Calculate("(1 + 1) * 2");
 
             Assert.Equal(expected, result);
         }

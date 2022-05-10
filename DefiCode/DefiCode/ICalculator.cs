@@ -8,6 +8,6 @@ namespace DefiCode
 {
     public interface ICalculator
     {
-        public string Calculate(string expression);
+        public string Calculate(string expression, bool isInitialExpression = true);
     }
 }
