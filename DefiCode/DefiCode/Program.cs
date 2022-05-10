@@ -4,8 +4,6 @@
 using DefiCode;
 
 Calculator calculator = new Calculator();
-string expression = "(5+2)*3";
+CalculatorUI ui = new CalculatorUI(calculator);
 
-Console.WriteLine(calculator.Calculate(expression));
-
-Console.WriteLine("Hello");
+ui.Start();

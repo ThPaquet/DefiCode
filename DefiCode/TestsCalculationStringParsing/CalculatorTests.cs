@@ -194,6 +194,32 @@ namespace TestsCalculationStringParsing
             Assert.Equal(expected, result);
         }
 
+        [Fact]
+        public void Test_Calculate_DoubleParanthesis()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "26";
+            string result = "";
+
+            result = calculator.Calculate("2 * (3 + (5*2))");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Test_Calculate_AllOperators()
+        {
+            Calculator calculator = new Calculator();
+
+            string expected = "10";
+            string result = "";
+
+            result = calculator.Calculate("2 ^ 2 + sqrt(4) * 6 / (4 - 2)");
+
+            Assert.Equal(expected, result);
+        }
+
         #endregion
         #region GetNumbersInCalculationString 
         [Fact]

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DefiCode
 {
-    public class Calculator
+    public class Calculator : ICalculator
     {
         public string Calculate(string expression)
         {
@@ -16,23 +16,14 @@ namespace DefiCode
                 return "Erreur";
             }
 
-            for (int index = 0; index < expression.Length; index++)
-            {
-                if (expression[index] == '(')
-                {
-                    int closingParanthesisIndex = expression.IndexOf(')');
-                    string subExpression = expression.Substring(index + 1, closingParanthesisIndex - index - 1);
-                    string subExpressionResult = this.Calculate(subExpression);
-                    expression = expression.Replace($"({subExpression})", subExpressionResult);
-                }
-            }
-
+            expression = this.ResolveParanthesis(expression);
+            expression = expression.Replace("sqrt", "√");
             List<decimal> numbers = GetNumbersInCalculationString(expression);
             List<Operator> operators = GetOperatorsInCalculationString(expression);
 
             while (operators.Count > 0)
             {
-                Operator currentOperator = operators.FirstOrDefault(o => 
+                Operator? currentOperator = operators.FirstOrDefault(o => 
                     o.Priority == operators.Max(o => o.Priority));
 
                 if (currentOperator != null)
@@ -43,29 +34,38 @@ namespace DefiCode
                     {
                         case '+':
                             numbers[index] = numbers[index] + numbers[index + 1];
+                            numbers.RemoveAt(index + 1);
                             break;
                         case '-':
                             numbers[index] = numbers[index] - numbers[index + 1];
+                            numbers.RemoveAt(index + 1);
                             break;
                         case '*':
                             numbers[index] = numbers[index] * numbers[index + 1];
+                            numbers.RemoveAt(index + 1);
                             break;
                         case '/':
                             numbers[index] = numbers[index] / numbers[index + 1];
+                            numbers.RemoveAt(index + 1);
                             break;
                         case '^':
                             numbers[index] = Convert.ToDecimal(Math.Pow((double)numbers[index], (double)numbers[index + 1]));
+                            numbers.RemoveAt(index + 1);
                             break;
+                        case '√':
+                            numbers[index] = Convert.ToDecimal(Math.Sqrt((double)numbers[index]));
+                            break;
+
                         default:
                             break;
                     }
 
                     operators.Remove(currentOperator);
-                    numbers.RemoveAt(index + 1);
                 }
             }
 
-            return numbers.First().ToString().Replace(',', '.');
+            string stringifiedResult = numbers.First().ToString().Replace(',', '.');
+            return stringifiedResult;
         }
         public List<decimal> GetNumbersInCalculationString(string expression)
         {
@@ -120,7 +120,6 @@ namespace DefiCode
 
             return operators;
         }
-
         public bool IsValidCalculationString(string expression)
         {
             char[] recognizedOperators = { '+', '-', '*', '/', '^', '√' };
@@ -144,6 +143,28 @@ namespace DefiCode
         {
             return (index == 1 && expression[index - 1] == '-') ||
                         (index >= 2 && expression[index - 1] == '-' && !char.IsDigit(expression[index - 2]));
+        }
+        public string ResolveParanthesis(string expression)
+        {
+            int closingParanthesisIndex = 0;
+
+            for (int index = expression.Length - 1; index >= 0; index--)
+            {
+                if (expression[index] == ')')
+                {
+                    closingParanthesisIndex = index;
+                }
+
+                if (expression[index] == '(')
+                {
+                    string subExpression = expression.Substring(index + 1, closingParanthesisIndex - index - 1);
+                    string subExpressionResult = this.Calculate(subExpression);
+                    expression = expression.Replace($"({subExpression})", subExpressionResult);
+                    index = expression.Length;
+                }
+            }
+
+            return expression;
         }
     }
 }
