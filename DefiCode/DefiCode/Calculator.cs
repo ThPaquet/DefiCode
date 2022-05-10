@@ -49,11 +49,11 @@ namespace DefiCode
                             numbers.RemoveAt(index + 1);
                             break;
                         case '^':
-                            numbers[index] = Convert.ToDecimal(Math.Pow((double)numbers[index], (double)numbers[index + 1]));
+                            numbers[index] =  ApplyPowerOfDecimals(numbers[index], numbers[index + 1]);
                             numbers.RemoveAt(index + 1);
                             break;
                         case '√':
-                            numbers[index] = Convert.ToDecimal(Math.Sqrt((double)numbers[index]));
+                            numbers[index] = GetSquareRootOfDecimal(numbers[index]);
                             break;
 
                         default:
@@ -165,6 +165,16 @@ namespace DefiCode
             }
 
             return expression;
+        }
+        private decimal ApplyPowerOfDecimals(decimal decimalBase, decimal decimalPower)
+        {
+            double resultDouble = Math.Pow((double)decimalBase, (double)decimalPower);
+            return Convert.ToDecimal(resultDouble);
+        }
+        private decimal GetSquareRootOfDecimal(decimal number)
+        {
+            double resultDouble = Math.Sqrt((double)number);
+            return Convert.ToDecimal(resultDouble);
         }
     }
 }
